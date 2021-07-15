@@ -13,6 +13,7 @@ import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -55,7 +56,7 @@ public class ClienteFrame extends javax.swing.JFrame {
                     Action action = message.getAction();
                     
                     if(action.equals(Action.CONNECT)){
-                        connect(message);
+                        connected(message);
                     }else if(action.equals(Action.DISCONNETCT)){
                         disconnect(message);
                     }else if(action.equals(Action.SEND_ONE)){
@@ -74,11 +75,45 @@ public class ClienteFrame extends javax.swing.JFrame {
 
     }
     
-    private void connect(ChatMessage message){
-        this.txtAreaReceive.append(message.getName() + "\n");
+    private void connected(ChatMessage message){
+        if(message.getText().equals("NO")){
+            this.txtName.setText("");
+            JOptionPane.showMessageDialog(this, "Conexão não realizada! tente novamente com um novo nome");
+            return;//forcar saida do metodo
+        }
+        this.message = message;
+        this.btnConectar.setEnabled(false);
+        this.txtName.setEnabled(false);
+        
+        this.btnSair.setEnabled(true);
+        this.txtAreaSend.setEnabled(true);
+        this.txtAreaReceive.setEnabled(true);
+        this.btnEnviar.setEnabled(true);
+        this.btnLimpar.setEnabled(true);
+        this.btnAtualizar.setEnabled(true);
+        
+        JOptionPane.showMessageDialog(this, "Conexão realizada com sucesso!");
     }
     
     private void disconnect(ChatMessage message){
+
+        try {
+            this.socket.close();
+
+            this.btnConectar.setEnabled(true);
+            this.txtName.setEnabled(true);
+
+            this.btnSair.setEnabled(false);
+            this.txtAreaSend.setEnabled(false);
+            this.txtAreaReceive.setEnabled(false);
+            this.btnEnviar.setEnabled(false);
+            this.btnLimpar.setEnabled(false);
+            this.btnAtualizar.setEnabled(false);
+            
+            JOptionPane.showMessageDialog(this, "Você saiu do chat!");
+        } catch (IOException ex) {
+            Logger.getLogger(ClienteFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
     }
     
@@ -127,6 +162,7 @@ public class ClienteFrame extends javax.swing.JFrame {
         });
 
         btnSair.setText("Sair");
+        btnSair.setEnabled(false);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -154,6 +190,7 @@ public class ClienteFrame extends javax.swing.JFrame {
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Onlines"));
 
         btnAtualizar.setText("Atualizar");
+        btnAtualizar.setEnabled(false);
 
         listOnlines.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -188,6 +225,7 @@ public class ClienteFrame extends javax.swing.JFrame {
 
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
+        txtAreaReceive.setEditable(false);
         txtAreaReceive.setColumns(20);
         txtAreaReceive.setRows(5);
         jScrollPane1.setViewportView(txtAreaReceive);
@@ -197,8 +235,10 @@ public class ClienteFrame extends javax.swing.JFrame {
         jScrollPane2.setViewportView(txtAreaSend);
 
         btnLimpar.setText("Limpar");
+        btnLimpar.setEnabled(false);
 
         btnEnviar.setText("Enviar");
+        btnEnviar.setEnabled(false);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);

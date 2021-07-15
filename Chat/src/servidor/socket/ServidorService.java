@@ -42,6 +42,7 @@ public class ServidorService {
         }
     }
 
+   
     private class ListenerSocket implements Runnable {
 
         private ObjectOutputStream output;
@@ -76,6 +77,7 @@ public class ServidorService {
                         }
 
                     } else if (action.equals(Action.DISCONNETCT)) {
+                        disconnect(message, output);
 
                     } else if (action.equals(Action.SEND_ONE)) {
 
@@ -116,6 +118,19 @@ public class ServidorService {
 
         return false;
     }
+    
+    private void disconnect(ChatMessage message, ObjectOutputStream output){
+        mapOnlines.remove(message.getName());
+        
+        message.setText("bye bye");
+        
+        message.setAction(Action.SEND_ONE);
+        
+        sendAll(message, output);
+        
+        System.out.println("User " + message.getName()+"sai da sala");
+        
+    }
 
     private void sendOne(ChatMessage message, ObjectOutputStream output) {
         try {
@@ -124,4 +139,10 @@ public class ServidorService {
             Logger.getLogger(ServidorService.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+     private void sendAll(ChatMessage message, ObjectOutputStream output) {
+         
+         
+    }
+
 }
