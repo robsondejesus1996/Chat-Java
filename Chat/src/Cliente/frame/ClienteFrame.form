@@ -66,11 +66,11 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <Component id="jTextField1" min="-2" pref="138" max="-2" attributes="0"/>
+                  <Component id="txtName" min="-2" pref="138" max="-2" attributes="0"/>
                   <EmptySpace pref="31" max="32767" attributes="0"/>
-                  <Component id="jButton1" min="-2" pref="120" max="-2" attributes="0"/>
+                  <Component id="btnConectar" min="-2" pref="120" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
-                  <Component id="jButton2" min="-2" pref="110" max="-2" attributes="0"/>
+                  <Component id="btnSair" min="-2" pref="110" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -80,9 +80,9 @@
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jTextField1" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="txtName" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnConectar" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnSair" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="35" max="32767" attributes="0"/>
               </Group>
@@ -90,19 +90,19 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JTextField" name="jTextField1">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="jTextField1"/>
-          </Properties>
+        <Component class="javax.swing.JTextField" name="txtName">
         </Component>
-        <Component class="javax.swing.JButton" name="jButton1">
+        <Component class="javax.swing.JButton" name="btnConectar">
           <Properties>
-            <Property name="text" type="java.lang.String" value="jButton1"/>
+            <Property name="text" type="java.lang.String" value="Conectar"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnConectarActionPerformed"/>
+          </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton2">
+        <Component class="javax.swing.JButton" name="btnSair">
           <Properties>
-            <Property name="text" type="java.lang.String" value="jButton2"/>
+            <Property name="text" type="java.lang.String" value="Sair"/>
           </Properties>
         </Component>
       </SubComponents>
@@ -123,7 +123,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
                           <EmptySpace min="-2" pref="71" max="-2" attributes="0"/>
-                          <Component id="jButton5" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnAtualizar" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
@@ -140,16 +140,16 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jScrollPane3" pref="318" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jButton5" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnAtualizar" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JButton" name="jButton5">
+        <Component class="javax.swing.JButton" name="btnAtualizar">
           <Properties>
-            <Property name="text" type="java.lang.String" value="jButton5"/>
+            <Property name="text" type="java.lang.String" value="Atualizar"/>
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane3">
@@ -159,7 +159,7 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
-            <Component class="javax.swing.JList" name="jList1">
+            <Component class="javax.swing.JList" name="listOnlines">
               <Properties>
                 <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
                   <StringArray count="5">
@@ -198,9 +198,9 @@
                       <Component id="jScrollPane2" alignment="1" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          <Component id="jButton3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnLimpar" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
-                          <Component id="jButton4" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnEnviar" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -217,8 +217,8 @@
                   <Component id="jScrollPane2" min="-2" pref="64" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jButton3" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButton4" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnLimpar" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnEnviar" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -233,7 +233,7 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
-            <Component class="javax.swing.JTextArea" name="jTextArea1">
+            <Component class="javax.swing.JTextArea" name="txtAreaReceive">
               <Properties>
                 <Property name="columns" type="int" value="20"/>
                 <Property name="rows" type="int" value="5"/>
@@ -248,7 +248,7 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
-            <Component class="javax.swing.JTextArea" name="jTextArea2">
+            <Component class="javax.swing.JTextArea" name="txtAreaSend">
               <Properties>
                 <Property name="columns" type="int" value="20"/>
                 <Property name="rows" type="int" value="5"/>
@@ -256,14 +256,14 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JButton" name="jButton3">
+        <Component class="javax.swing.JButton" name="btnLimpar">
           <Properties>
-            <Property name="text" type="java.lang.String" value="jButton3"/>
+            <Property name="text" type="java.lang.String" value="Limpar"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton4">
+        <Component class="javax.swing.JButton" name="btnEnviar">
           <Properties>
-            <Property name="text" type="java.lang.String" value="jButton4"/>
+            <Property name="text" type="java.lang.String" value="Enviar"/>
           </Properties>
         </Component>
       </SubComponents>

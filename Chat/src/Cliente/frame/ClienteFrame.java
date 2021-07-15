@@ -5,17 +5,89 @@
  */
 package Cliente.frame;
 
+import Cliente.bean.ChatMessage;
+import Cliente.bean.ChatMessage.Action;
+import Cliente.service.ClienteService;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author admin
  */
 public class ClienteFrame extends javax.swing.JFrame {
+    
+    
+    private Socket socket;
+    private ChatMessage message;
+    private ClienteService service;
+    
 
     /**
      * Creates new form ClienteFrame
      */
     public ClienteFrame() {
         initComponents();
+    }
+    
+    private class ListnerSocket implements Runnable{
+        
+        private ObjectInputStream input;
+        
+        public ListnerSocket(Socket socket){
+            try {
+                this.input = new ObjectInputStream(socket.getInputStream());
+            } catch (IOException ex) {
+                Logger.getLogger(ClienteFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        @Override
+        public void run() {
+
+            ChatMessage message = null;
+            try {
+
+                while ((message = (ChatMessage) input.readObject()) != null) {
+                    Action action = message.getAction();
+                    
+                    if(action.equals(Action.CONNECT)){
+                        connect(message);
+                    }else if(action.equals(Action.DISCONNETCT)){
+                        disconnect(message);
+                    }else if(action.equals(Action.SEND_ONE)){
+                        sendOne(message);
+                    }else if(action.equals(Action.USERS_ONLINE)){
+                        refreshOnline(message);
+                    }
+
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(ClienteFrame.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(ClienteFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+    }
+    
+    private void connect(ChatMessage message){
+        
+    }
+    
+    private void disconnect(ChatMessage message){
+        
+    }
+    
+    private void sendOne(ChatMessage message){
+        
+    }
+    
+    private void refreshOnline(ChatMessage message){
+        
     }
 
     /**
@@ -28,41 +100,44 @@ public class ClienteFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        txtName = new javax.swing.JTextField();
+        btnConectar = new javax.swing.JButton();
+        btnSair = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        jButton5 = new javax.swing.JButton();
+        btnAtualizar = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        listOnlines = new javax.swing.JList<>();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        txtAreaReceive = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        txtAreaSend = new javax.swing.JTextArea();
+        btnLimpar = new javax.swing.JButton();
+        btnEnviar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Conectar"));
 
-        jTextField1.setText("jTextField1");
+        btnConectar.setText("Conectar");
+        btnConectar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConectarActionPerformed(evt);
+            }
+        });
 
-        jButton1.setText("jButton1");
-
-        jButton2.setText("jButton2");
+        btnSair.setText("Sair");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnConectar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(34, 34, 34)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnSair, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(31, 31, 31))
         );
         jPanel1Layout.setVerticalGroup(
@@ -70,22 +145,22 @@ public class ClienteFrame extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnConectar)
+                    .addComponent(btnSair))
                 .addContainerGap(35, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Onlines"));
 
-        jButton5.setText("jButton5");
+        btnAtualizar.setText("Atualizar");
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+        listOnlines.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane3.setViewportView(jList1);
+        jScrollPane3.setViewportView(listOnlines);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -95,7 +170,7 @@ public class ClienteFrame extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(71, 71, 71)
-                        .addComponent(jButton5))
+                        .addComponent(btnAtualizar))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -107,23 +182,23 @@ public class ClienteFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton5)
+                .addComponent(btnAtualizar)
                 .addContainerGap())
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        txtAreaReceive.setColumns(20);
+        txtAreaReceive.setRows(5);
+        jScrollPane1.setViewportView(txtAreaReceive);
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jScrollPane2.setViewportView(jTextArea2);
+        txtAreaSend.setColumns(20);
+        txtAreaSend.setRows(5);
+        jScrollPane2.setViewportView(txtAreaSend);
 
-        jButton3.setText("jButton3");
+        btnLimpar.setText("Limpar");
 
-        jButton4.setText("jButton4");
+        btnEnviar.setText("Enviar");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -136,9 +211,9 @@ public class ClienteFrame extends javax.swing.JFrame {
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton3)
+                        .addComponent(btnLimpar)
                         .addGap(32, 32, 32)
-                        .addComponent(jButton4)
+                        .addComponent(btnEnviar)
                         .addGap(10, 10, 10)))
                 .addContainerGap())
         );
@@ -151,8 +226,8 @@ public class ClienteFrame extends javax.swing.JFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(25, 25, 25)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4))
+                    .addComponent(btnLimpar)
+                    .addComponent(btnEnviar))
                 .addContainerGap())
         );
 
@@ -184,6 +259,27 @@ public class ClienteFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnConectarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConectarActionPerformed
+        // TODO add your handling code here:
+        
+        String name = this.txtName.getText();
+        
+        if(!name.isEmpty()){
+            this.message = new ChatMessage();
+            this.message.setAction(Action.CONNECT);
+            this.message.setName(name);
+            
+            if(this.socket == null){
+                this.service = new ClienteService();
+                this.socket = this.service.connect();
+                
+                new Thread(new ListnerSocket(this.socket)).start();
+            }
+            
+            this.service.send(message);
+        }
+    }//GEN-LAST:event_btnConectarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -221,20 +317,20 @@ public class ClienteFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JList<String> jList1;
+    private javax.swing.JButton btnAtualizar;
+    private javax.swing.JButton btnConectar;
+    private javax.swing.JButton btnEnviar;
+    private javax.swing.JButton btnLimpar;
+    private javax.swing.JButton btnSair;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextArea jTextArea2;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JList<String> listOnlines;
+    private javax.swing.JTextArea txtAreaReceive;
+    private javax.swing.JTextArea txtAreaSend;
+    private javax.swing.JTextField txtName;
     // End of variables declaration//GEN-END:variables
 }
