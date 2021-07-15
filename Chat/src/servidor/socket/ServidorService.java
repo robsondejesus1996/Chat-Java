@@ -23,30 +23,30 @@ import sun.awt.windows.ThemeReader;
  * @author Robson de Jesus
  */
 public class ServidorService {
-    
+
     private ServerSocket serverSocket;
     private Socket socket;
     private Map<String, ObjectOutputStream> mapOnlines = new HashMap<String, ObjectOutputStream>();
-    
+
     public ServidorService() {
         try {
             serverSocket = new ServerSocket(5555);
-            
+
             while (true) {
                 socket = serverSocket.accept();
-                
+
                 new Thread(new ListenerSocket(socket)).start();
             }
         } catch (IOException ex) {
             Logger.getLogger(ServidorService.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private class ListenerSocket implements Runnable {
-        
+
         private ObjectOutputStream output;
         private ObjectInputStream input;
-        
+
         public ListenerSocket(Socket socket) {
             try {
                 this.output = new ObjectOutputStream(socket.getOutputStream());
@@ -58,27 +58,31 @@ public class ServidorService {
             } catch (IOException ex) {
                 Logger.getLogger(ServidorService.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }        
-        
+        }
+
         @Override
         public void run() {
             try {
                 ChatMessage message = null;
-                
+
                 while ((message = (ChatMessage) input.readObject()) != null) {
                     Action action = message.getAction();
-                    
+
                     if (action.equals(Action.CONNECT)) {
-                        connect(message, output);
-                        
+                        boolean isConnect = connect(message, output);
+
+                        if (isConnect) {
+                            mapOnlines.put(message.getName(), output);
+                        }
+
                     } else if (action.equals(Action.DISCONNETCT)) {
-                        
+
                     } else if (action.equals(Action.SEND_ONE)) {
-                        
+
                     } else if (action.equals(Action.SEND_ALL)) {
-                        
+
                     } else if (action.equals(Action.USERS_ONLINE)) {
-                        
+
                     }
                 }
             } catch (IOException ex) {
@@ -87,13 +91,32 @@ public class ServidorService {
                 Logger.getLogger(ServidorService.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
     }
-    
-    private void connect(ChatMessage message, ObjectOutputStream output) {
-        sendOne(message, output);
+
+    private boolean connect(ChatMessage message, ObjectOutputStream output) {
+        if (mapOnlines.size() == 0) {
+            message.setText("YES");
+            sendOne(message, output);
+            return true;
+        }
+
+        for (Map.Entry<String, ObjectOutputStream> kv : mapOnlines.entrySet()) {
+            if (kv.getKey().equals(message.getName())) {
+                message.setText("NO");
+                sendOne(message, output);
+                return false;
+
+            } else {
+                message.setText("YES");
+                sendOne(message, output);
+                return true;
+            }
+        }
+
+        return false;
     }
-    
+
     private void sendOne(ChatMessage message, ObjectOutputStream output) {
         try {
             output.writeObject(message);

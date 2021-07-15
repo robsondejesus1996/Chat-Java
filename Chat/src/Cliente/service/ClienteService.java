@@ -24,6 +24,7 @@ public class ClienteService {
     public Socket connect() {
         try {
             this.socket = new Socket("localhost", 5555);
+            this.output = new ObjectOutputStream(socket.getOutputStream());
         } catch (IOException ex) {
             Logger.getLogger(ClienteService.class.getName()).log(Level.SEVERE, null, ex);
         }
