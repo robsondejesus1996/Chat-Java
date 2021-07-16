@@ -162,17 +162,18 @@ public class ServidorService {
      
     private void sendOnlines() {
         Set<String> setNames = new HashSet<String>();
-        
         for(Map.Entry<String, ObjectOutputStream> kv : mapOnlines.entrySet()){
             setNames.add(kv.getKey());
         }
         
         ChatMessage message = new ChatMessage();
         message.setAction(Action.USERS_ONLINE);
-        message.setSetOnlines(null);
+        message.setSetOnlines(setNames);
         
         for (Map.Entry<String, ObjectOutputStream> kv : mapOnlines.entrySet()) {
+            message.setName(kv.getKey());
             try {
+                System.out.println("name -- " + kv.getKey());
                 kv.getValue().writeObject(message);
             } catch (IOException ex) {
                 Logger.getLogger(ServidorService.class.getName()).log(Level.SEVERE, null, ex);

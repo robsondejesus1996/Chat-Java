@@ -11,9 +11,13 @@ import Cliente.service.ClienteService;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
 
 /**
  *
@@ -91,7 +95,6 @@ public class ClienteFrame extends javax.swing.JFrame {
         this.txtAreaReceive.setEnabled(true);
         this.btnEnviar.setEnabled(true);
         this.btnLimpar.setEnabled(true);
-        this.btnAtualizar.setEnabled(true);
         
         JOptionPane.showMessageDialog(this, "Conexão realizada com sucesso!");
     }
@@ -106,7 +109,9 @@ public class ClienteFrame extends javax.swing.JFrame {
         this.txtAreaReceive.setEnabled(false);
         this.btnEnviar.setEnabled(false);
         this.btnLimpar.setEnabled(false);
-        this.btnAtualizar.setEnabled(false);
+        
+        this.txtAreaReceive.setText("");
+        this.txtAreaSend.setText("");
 
         JOptionPane.showMessageDialog(this, "Você saiu do chat!");
 
@@ -117,6 +122,14 @@ public class ClienteFrame extends javax.swing.JFrame {
     }
     
     private void refreshOnline(ChatMessage message){
+        System.out.println(message.getSetOnlines().toString());
+        Set<String> names = message.getSetOnlines();
+        
+        String[] array = (String []) names.toArray(new String [names.size()]);
+        
+        this.listOnlines.setListData(array);
+        this.listOnlines.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        this.listOnlines.setLayoutOrientation(JList.VERTICAL);
         
     }
 
@@ -134,7 +147,6 @@ public class ClienteFrame extends javax.swing.JFrame {
         btnConectar = new javax.swing.JButton();
         btnSair = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        btnAtualizar = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         listOnlines = new javax.swing.JList<>();
         jPanel3 = new javax.swing.JPanel();
@@ -189,9 +201,6 @@ public class ClienteFrame extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Onlines"));
 
-        btnAtualizar.setText("Atualizar");
-        btnAtualizar.setEnabled(false);
-
         listOnlines.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
@@ -204,13 +213,8 @@ public class ClienteFrame extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(71, 71, 71)
-                        .addComponent(btnAtualizar))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(14, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -218,9 +222,7 @@ public class ClienteFrame extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnAtualizar)
-                .addContainerGap())
+                .addGap(44, 44, 44))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -348,7 +350,7 @@ public class ClienteFrame extends javax.swing.JFrame {
             this.message.setText(text);
             this.message.setAction(Action.SEND_ALL);
             
-            this.txtAreaReceive.append("Você disse: " +text);
+            this.txtAreaReceive.append("Você disse: " +text + "\n");
             
             this.service.send(this.message);
         }
@@ -367,7 +369,6 @@ public class ClienteFrame extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAtualizar;
     private javax.swing.JButton btnConectar;
     private javax.swing.JButton btnEnviar;
     private javax.swing.JButton btnLimpar;
