@@ -123,7 +123,10 @@ public class ClienteFrame extends javax.swing.JFrame {
     
     private void refreshOnline(ChatMessage message){
         System.out.println(message.getSetOnlines().toString());
+        
         Set<String> names = message.getSetOnlines();
+        
+        names.remove(message.getName());
         
         String[] array = (String []) names.toArray(new String [names.size()]);
         
@@ -201,11 +204,6 @@ public class ClienteFrame extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Onlines"));
 
-        listOnlines.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
         jScrollPane3.setViewportView(listOnlines);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -343,13 +341,19 @@ public class ClienteFrame extends javax.swing.JFrame {
         String text = this.txtAreaSend.getText();
         String name = this.message.getName();
         
+        this.message = new ChatMessage();
+        
+        if(this.listOnlines.getSelectedIndex() > -1){
+            this.message.setNameReserved((String) this.listOnlines.getSelectedValue());
+            this.message.setAction(Action.SEND_ONE);
+            this.listOnlines.clearSelection();
+        } else{
+            this.message.setAction(Action.SEND_ALL);
+        }
+        
         if (!text.isEmpty()) {
-            
-            this.message = new ChatMessage();
             this.message.setName(name);
             this.message.setText(text);
-            this.message.setAction(Action.SEND_ALL);
-            
             this.txtAreaReceive.append("Você disse: " +text + "\n");
             
             this.service.send(this.message);
