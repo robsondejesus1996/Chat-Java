@@ -58,7 +58,8 @@ public class ClienteFrame extends javax.swing.JFrame {
                     if(action.equals(Action.CONNECT)){
                         connected(message);
                     }else if(action.equals(Action.DISCONNETCT)){
-                        disconnect();
+                        disconnected();
+                        socket.close();
                     }else if(action.equals(Action.SEND_ONE)){
                         receive(message);
                     }else if(action.equals(Action.USERS_ONLINE)){
@@ -95,26 +96,20 @@ public class ClienteFrame extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, "Conexão realizada com sucesso!");
     }
     
-    private void disconnect(){
+    private void disconnected() {
 
-        try {
-            this.socket.close();
+        this.btnConectar.setEnabled(true);
+        this.txtName.setEnabled(true);
 
-            this.btnConectar.setEnabled(true);
-            this.txtName.setEnabled(true);
+        this.btnSair.setEnabled(false);
+        this.txtAreaSend.setEnabled(false);
+        this.txtAreaReceive.setEnabled(false);
+        this.btnEnviar.setEnabled(false);
+        this.btnLimpar.setEnabled(false);
+        this.btnAtualizar.setEnabled(false);
 
-            this.btnSair.setEnabled(false);
-            this.txtAreaSend.setEnabled(false);
-            this.txtAreaReceive.setEnabled(false);
-            this.btnEnviar.setEnabled(false);
-            this.btnLimpar.setEnabled(false);
-            this.btnAtualizar.setEnabled(false);
-            
-            JOptionPane.showMessageDialog(this, "Você saiu do chat!");
-        } catch (IOException ex) {
-            Logger.getLogger(ClienteFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
+        JOptionPane.showMessageDialog(this, "Você saiu do chat!");
+
     }
     
     private void receive(ChatMessage message){
@@ -244,6 +239,11 @@ public class ClienteFrame extends javax.swing.JFrame {
 
         btnEnviar.setText("Enviar");
         btnEnviar.setEnabled(false);
+        btnEnviar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEnviarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -307,21 +307,19 @@ public class ClienteFrame extends javax.swing.JFrame {
 
     private void btnConectarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConectarActionPerformed
         // TODO add your handling code here:
-        
+
         String name = this.txtName.getText();
-        
-        if(!name.isEmpty()){
+
+        if (!name.isEmpty()) {
             this.message = new ChatMessage();
             this.message.setAction(Action.CONNECT);
             this.message.setName(name);
-            
-            if(this.socket == null){
-                this.service = new ClienteService();
-                this.socket = this.service.connect();
-                
-                new Thread(new ListnerSocket(this.socket)).start();
-            }
-            
+
+            this.service = new ClienteService();
+            this.socket = this.service.connect();
+
+            new Thread(new ListnerSocket(this.socket)).start();
+
             this.service.send(message);
         }
     }//GEN-LAST:event_btnConectarActionPerformed
@@ -330,8 +328,25 @@ public class ClienteFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         this.message.setAction(Action.DISCONNETCT);
         this.service.send(this.message);
-        disconnect();
+        disconnected();
     }//GEN-LAST:event_btnSairActionPerformed
+
+    private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarActionPerformed
+        // TODO add your handling code here:
+        String text = this.txtAreaSend.getText();
+        String name = this.message.getName();
+        
+        if (!text.isEmpty()) {
+            
+            this.message = new ChatMessage();
+            this.message.setName(name);
+            this.message.setText(text);
+            this.message.setAction(Action.SEND_ALL);
+            this.service.send(this.message);
+        }
+
+        this.txtAreaSend.setText("");//limpar o campo
+    }//GEN-LAST:event_btnEnviarActionPerformed
 
     /**
      * @param args the command line arguments

@@ -32,6 +32,8 @@ public class ServidorService {
     public ServidorService() {
         try {
             serverSocket = new ServerSocket(5555);
+            
+            System.out.println("Servidor online!");
 
             while (true) {
                 socket = serverSocket.accept();
@@ -79,7 +81,7 @@ public class ServidorService {
 
                     } else if (action.equals(Action.DISCONNETCT)) {
                         disconnect(message, output);
-
+                        return;
                     } else if (action.equals(Action.SEND_ONE)) {
                         sendOne(message, output);
                     } else if (action.equals(Action.SEND_ALL)) {
@@ -124,13 +126,13 @@ public class ServidorService {
     private void disconnect(ChatMessage message, ObjectOutputStream output){
         mapOnlines.remove(message.getName());
         
-        message.setText("deixou o chat!");
+        message.setText(" até logo!");
         
         message.setAction(Action.SEND_ONE);
         
         sendAll(message);
         
-        System.out.println("User " + message.getName()+"sai da sala");
+        System.out.println("User " + message.getName()+" sai da sala");
         
     }
 
