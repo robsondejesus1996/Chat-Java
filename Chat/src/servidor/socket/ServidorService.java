@@ -7,17 +7,17 @@ package servidor.socket;
 
 import Cliente.bean.ChatMessage;
 import Cliente.bean.ChatMessage.Action;
-import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sun.awt.windows.ThemeReader;
 
 /**
  *
@@ -77,6 +77,7 @@ public class ServidorService {
 
                         if (isConnect) {
                             mapOnlines.put(message.getName(), output);
+                            sendOnlines();
                         }
 
                     } else if (action.equals(Action.DISCONNETCT)) {
@@ -148,6 +149,7 @@ public class ServidorService {
          
          for(Map.Entry<String, ObjectOutputStream> kv : mapOnlines.entrySet()){
              if(!kv.getKey().equals(message.getName())){
+                  message.setAction(Action.SEND_ONE);
                  try {
                      kv.getValue().writeObject(message);
                  } catch (IOException ex) {
@@ -156,6 +158,28 @@ public class ServidorService {
              }
          }
          
+    }
+     
+    private void sendOnlines() {
+        Set<String> setNames = new HashSet<String>();
+        
+        for(Map.Entry<String, ObjectOutputStream> kv : mapOnlines.entrySet()){
+            setNames.add(kv.getKey());
+        }
+        
+        ChatMessage message = new ChatMessage();
+        message.setAction(Action.USERS_ONLINE);
+        message.setSetOnlines(null);
+        
+        for (Map.Entry<String, ObjectOutputStream> kv : mapOnlines.entrySet()) {
+            try {
+                kv.getValue().writeObject(message);
+            } catch (IOException ex) {
+                Logger.getLogger(ServidorService.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        }
+        
     }
 
 }

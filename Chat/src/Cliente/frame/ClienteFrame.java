@@ -236,6 +236,11 @@ public class ClienteFrame extends javax.swing.JFrame {
 
         btnLimpar.setText("Limpar");
         btnLimpar.setEnabled(false);
+        btnLimpar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimparActionPerformed(evt);
+            }
+        });
 
         btnEnviar.setText("Enviar");
         btnEnviar.setEnabled(false);
@@ -342,11 +347,19 @@ public class ClienteFrame extends javax.swing.JFrame {
             this.message.setName(name);
             this.message.setText(text);
             this.message.setAction(Action.SEND_ALL);
+            
+            this.txtAreaReceive.append("Você disse: " +text);
+            
             this.service.send(this.message);
         }
 
         this.txtAreaSend.setText("");//limpar o campo
     }//GEN-LAST:event_btnEnviarActionPerformed
+
+    private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
+        // TODO add your handling code here:
+        this.txtAreaSend.setText("");
+    }//GEN-LAST:event_btnLimparActionPerformed
 
     /**
      * @param args the command line arguments
