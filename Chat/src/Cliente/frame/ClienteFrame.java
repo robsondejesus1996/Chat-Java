@@ -58,7 +58,7 @@ public class ClienteFrame extends javax.swing.JFrame {
                     if(action.equals(Action.CONNECT)){
                         connected(message);
                     }else if(action.equals(Action.DISCONNETCT)){
-                        disconnect(message);
+                        disconnect();
                     }else if(action.equals(Action.SEND_ONE)){
                         receive(message);
                     }else if(action.equals(Action.USERS_ONLINE)){
@@ -95,7 +95,7 @@ public class ClienteFrame extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, "Conexão realizada com sucesso!");
     }
     
-    private void disconnect(ChatMessage message){
+    private void disconnect(){
 
         try {
             this.socket.close();
@@ -118,7 +118,7 @@ public class ClienteFrame extends javax.swing.JFrame {
     }
     
     private void receive(ChatMessage message){
-        //this.txtAreaReceive.append(message.getName() + "\n");
+        this.txtAreaReceive.append(message.getName() + " diz: " + message.getText() + "\n");
     }
     
     private void refreshOnline(ChatMessage message){
@@ -163,6 +163,11 @@ public class ClienteFrame extends javax.swing.JFrame {
 
         btnSair.setText("Sair");
         btnSair.setEnabled(false);
+        btnSair.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSairActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -320,6 +325,13 @@ public class ClienteFrame extends javax.swing.JFrame {
             this.service.send(message);
         }
     }//GEN-LAST:event_btnConectarActionPerformed
+
+    private void btnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairActionPerformed
+        // TODO add your handling code here:
+        this.message.setAction(Action.DISCONNETCT);
+        this.service.send(this.message);
+        disconnect();
+    }//GEN-LAST:event_btnSairActionPerformed
 
     /**
      * @param args the command line arguments

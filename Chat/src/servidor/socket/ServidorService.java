@@ -7,6 +7,7 @@ package servidor.socket;
 
 import Cliente.bean.ChatMessage;
 import Cliente.bean.ChatMessage.Action;
+import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -80,14 +81,15 @@ public class ServidorService {
                         disconnect(message, output);
 
                     } else if (action.equals(Action.SEND_ONE)) {
-
+                        sendOne(message, output);
                     } else if (action.equals(Action.SEND_ALL)) {
-
+                        sendAll(message);
                     } else if (action.equals(Action.USERS_ONLINE)) {
 
                     }
                 }
             } catch (IOException ex) {
+                //disconnect(message, output);
                 Logger.getLogger(ServidorService.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(ServidorService.class.getName()).log(Level.SEVERE, null, ex);
@@ -122,11 +124,11 @@ public class ServidorService {
     private void disconnect(ChatMessage message, ObjectOutputStream output){
         mapOnlines.remove(message.getName());
         
-        message.setText("bye bye");
+        message.setText("deixou o chat!");
         
         message.setAction(Action.SEND_ONE);
         
-        sendAll(message, output);
+        sendAll(message);
         
         System.out.println("User " + message.getName()+"sai da sala");
         
@@ -140,8 +142,17 @@ public class ServidorService {
         }
     }
     
-     private void sendAll(ChatMessage message, ObjectOutputStream output) {
+     private void sendAll(ChatMessage message) {
          
+         for(Map.Entry<String, ObjectOutputStream> kv : mapOnlines.entrySet()){
+             if(!kv.getKey().equals(message.getName())){
+                 try {
+                     kv.getValue().writeObject(message);
+                 } catch (IOException ex) {
+                     Logger.getLogger(ServidorService.class.getName()).log(Level.SEVERE, null, ex);
+                 }
+             }
+         }
          
     }
 
